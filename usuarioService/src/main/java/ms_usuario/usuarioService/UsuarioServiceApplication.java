@@ -1,4 +1,4 @@
-package com.ms_usuario.usuarioService;
+package ms_usuario.usuarioService;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
