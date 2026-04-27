@@ -1,4 +1,4 @@
-package com.ms_usuario.usuarioService.controller;
+package ms_usuario.usuarioService.controller;
 
 public class UsuarioController {
 }
