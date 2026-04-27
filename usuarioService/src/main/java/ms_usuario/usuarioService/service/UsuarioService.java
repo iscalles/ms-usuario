@@ -1,4 +1,4 @@
-package com.ms_usuario.usuarioService.service;
+package ms_usuario.usuarioService.service;
 
 public class UsuarioService {
 }
