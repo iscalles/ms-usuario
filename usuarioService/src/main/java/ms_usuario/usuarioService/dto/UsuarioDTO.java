@@ -1,4 +1,4 @@
-package com.ms_usuario.usuarioService.dto;
+package ms_usuario.usuarioService.dto;
 
 public class UsuarioDTO {
 }

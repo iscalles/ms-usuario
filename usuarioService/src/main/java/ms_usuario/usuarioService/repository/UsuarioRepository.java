@@ -1,4 +1,4 @@
-package com.ms_usuario.usuarioService.repository;
+package ms_usuario.usuarioService.repository;
 
 public interface UsuarioRepository {
 }
