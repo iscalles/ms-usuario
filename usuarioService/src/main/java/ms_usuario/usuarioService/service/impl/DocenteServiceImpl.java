@@ -14,7 +14,7 @@ import java.util.List;
 public class DocenteServiceImpl implements DocenteService {
     private final DocenteRepository docenteRepository;
 
-    private DocenteServiceImpl(DocenteRepository docenteRepository) {
+    public DocenteServiceImpl(DocenteRepository docenteRepository) {
         this.docenteRepository = docenteRepository;
     }
 
