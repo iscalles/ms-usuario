@@ -5,7 +5,7 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
-@Entity  // ← Esto mapea la tabla
+@Entity  // mapea la tabla
 @Table(name = "APODERADO_ESTUDIANTE")
 public class ApoderadoEstudiante {
 

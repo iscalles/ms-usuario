@@ -5,7 +5,7 @@ import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Embeddable  // ← Indica que es un componente embebido (clave)
+@Embeddable  // componente embebido (clave)
 public class ApoderadoEstudianteId implements Serializable {
 
     @Column(name = "APODERADO_USUARIO_rut_usuario")
@@ -22,6 +22,22 @@ public class ApoderadoEstudianteId implements Serializable {
     }
 
     // Getters y Setters...
+
+    public String getApoderadoRutUsuario() {
+        return apoderadoRutUsuario;
+    }
+
+    public void setApoderadoRutUsuario(String apoderadoRutUsuario) {
+        this.apoderadoRutUsuario = apoderadoRutUsuario;
+    }
+
+    public String getEstudianteRutUsuario() {
+        return estudianteRutUsuario;
+    }
+
+    public void setEstudianteRutUsuario(String estudianteRutUsuario) {
+        this.estudianteRutUsuario = estudianteRutUsuario;
+    }
 
     @Override
     public boolean equals(Object o) {
