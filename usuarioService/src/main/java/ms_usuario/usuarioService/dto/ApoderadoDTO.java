@@ -1,28 +1,18 @@
-package ms_usuario.usuarioService.model;
+package ms_usuario.usuarioService.dto;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
-@Entity
-@Table(name = "APODERADO")
-public class Apoderado {
-    @Id
-    @Column(name = "USUARIO_rut_usuario")
+public class ApoderadoDTO {
+
+    @NotBlank(message = "El RUT del usuario es requerido")
     private String usuarioRutUsuario;
 
-    @Column(name = "direccion_apoderado", length = 200)
+    @Size(max = 200, message = "La dirección no puede exceder 200 caracteres")
     private String direccionApoderado;
 
-    @Column(name = "telefono_apoderado", length = 15)
+    @Size(max = 15, message = "El teléfono no puede exceder 15 caracteres")
+    @Pattern(regexp = "^[0-9+\\-()\\s]*$", message = "El teléfono debe contener solo números y caracteres válidos")
     private String telefonoApoderado;
-
-    // Constructores
-    public Apoderado() {}
-
-    public Apoderado(String usuarioRutUsuario, String direccionApoderado, String telefonoApoderado) {
-        this.usuarioRutUsuario = usuarioRutUsuario;
-        this.direccionApoderado = direccionApoderado;
-        this.telefonoApoderado = telefonoApoderado;
-    }
 
     // Getters y Setters
     public String getUsuarioRutUsuario() {

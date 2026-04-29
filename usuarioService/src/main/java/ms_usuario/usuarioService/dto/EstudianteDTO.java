@@ -1,29 +1,20 @@
-package ms_usuario.usuarioService.model;
+package ms_usuario.usuarioService.dto;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.util.Date;
 
-@Entity
-@Table(name = "ESTUDIANTE")
-public class Estudiante {
-    @Id
-    @Column(name = "USUARIO_rut_usuario")
+public class EstudianteDTO {
+
+    @NotBlank(message = "El RUT del usuario es requerido")
     private String usuarioRutUsuario;
 
-    @Column(name = "fecha_ingreso_estudiante")
+    @NotNull(message = "La fecha de ingreso es requerida")
+    @PastOrPresent(message = "La fecha de ingreso no puede ser futura")
     private Date fechaIngresoEstudiante;
 
-    @Column(name = "estado_estudiante", length = 40)
+    @NotBlank(message = "El estado del estudiante es requerido")
+    @Size(max = 40, message = "El estado no puede exceder 40 caracteres")
     private String estadoEstudiante;
-
-    // Constructores
-    public Estudiante() {}
-
-    public Estudiante(String usuarioRutUsuario, Date fechaIngresoEstudiante, String estadoEstudiante) {
-        this.usuarioRutUsuario = usuarioRutUsuario;
-        this.fechaIngresoEstudiante = fechaIngresoEstudiante;
-        this.estadoEstudiante = estadoEstudiante;
-    }
 
     // Getters y Setters
     public String getUsuarioRutUsuario() {

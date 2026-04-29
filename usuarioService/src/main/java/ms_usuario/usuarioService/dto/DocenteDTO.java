@@ -1,29 +1,17 @@
-package ms_usuario.usuarioService.model;
+package ms_usuario.usuarioService.dto;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
-@Entity
-@Table(name = "DOCENTE")
-public class Docente {
+public class DocenteDTO {
 
-    @Id
-    @Column(name = "USUARIO_rut_usuario")
+    @NotBlank(message = "El RUT del usuario es requerido")
     private String usuarioRutUsuario;
 
-    @Column(name = "titulo_profesional_docente", length = 200)
+    @Size(max = 200, message = "El título profesional no puede exceder 200 caracteres")
     private String tituloProfesionalDocente;
 
-    @Column(name = "especialidad_docente", length = 100)
+    @Size(max = 100, message = "La especialidad no puede exceder 100 caracteres")
     private String especialidadDocente;
-
-    // Constructores
-    public Docente() {}
-
-    public Docente(String usuarioRutUsuario, String tituloProfesionalDocente, String especialidadDocente) {
-        this.usuarioRutUsuario = usuarioRutUsuario;
-        this.tituloProfesionalDocente = tituloProfesionalDocente;
-        this.especialidadDocente = especialidadDocente;
-    }
 
     // Getters y Setters
     public String getUsuarioRutUsuario() {
@@ -50,4 +38,3 @@ public class Docente {
         this.especialidadDocente = especialidadDocente;
     }
 }
-
