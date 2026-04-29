@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Apoderado {
     @Id
     @Column(name = "USUARIO_rut_usuario")
-    private Integer usuarioRutUsuario;
+    private String usuarioRutUsuario;
 
     @Column(name = "direccion_apoderado", length = 200)
     private String direccionApoderado;
@@ -18,18 +18,18 @@ public class Apoderado {
     // Constructores
     public Apoderado() {}
 
-    public Apoderado(Integer usuarioRutUsuario, String direccionApoderado, String telefonoApoderado) {
+    public Apoderado(String usuarioRutUsuario, String direccionApoderado, String telefonoApoderado) {
         this.usuarioRutUsuario = usuarioRutUsuario;
         this.direccionApoderado = direccionApoderado;
         this.telefonoApoderado = telefonoApoderado;
     }
 
     // Getters y Setters
-    public Integer getUsuarioRutUsuario() {
+    public String getUsuarioRutUsuario() {
         return usuarioRutUsuario;
     }
 
-    public void setUsuarioRutUsuario(Integer usuarioRutUsuario) {
+    public void setUsuarioRutUsuario(String usuarioRutUsuario) {
         this.usuarioRutUsuario = usuarioRutUsuario;
     }
 

@@ -9,14 +9,14 @@ import java.util.Objects;
 public class ApoderadoEstudianteId implements Serializable {
 
     @Column(name = "APODERADO_USUARIO_rut_usuario")
-    private Integer apoderadoRutUsuario;
+    private String apoderadoRutUsuario;
 
     @Column(name = "ESTUDIANTE_USUARIO_rut_usuario")
-    private Integer estudianteRutUsuario;
+    private String estudianteRutUsuario;
 
     public ApoderadoEstudianteId() {}
 
-    public ApoderadoEstudianteId(Integer apoderadoRutUsuario, Integer estudianteRutUsuario) {
+    public ApoderadoEstudianteId(String apoderadoRutUsuario, String estudianteRutUsuario) {
         this.apoderadoRutUsuario = apoderadoRutUsuario;
         this.estudianteRutUsuario = estudianteRutUsuario;
     }

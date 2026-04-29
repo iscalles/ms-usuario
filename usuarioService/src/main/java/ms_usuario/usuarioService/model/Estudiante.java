@@ -8,7 +8,7 @@ import java.util.Date;
 public class Estudiante {
     @Id
     @Column(name = "USUARIO_rut_usuario")
-    private Integer usuarioRutUsuario;
+    private String usuarioRutUsuario;
 
     @Column(name = "fecha_ingreso_estudiante")
     private Date fechaIngresoEstudiante;
@@ -19,18 +19,18 @@ public class Estudiante {
     // Constructores
     public Estudiante() {}
 
-    public Estudiante(Integer usuarioRutUsuario, Date fechaIngresoEstudiante, String estadoEstudiante) {
+    public Estudiante(String usuarioRutUsuario, Date fechaIngresoEstudiante, String estadoEstudiante) {
         this.usuarioRutUsuario = usuarioRutUsuario;
         this.fechaIngresoEstudiante = fechaIngresoEstudiante;
         this.estadoEstudiante = estadoEstudiante;
     }
 
     // Getters y Setters
-    public Integer getUsuarioRutUsuario() {
+    public String getUsuarioRutUsuario() {
         return usuarioRutUsuario;
     }
 
-    public void setUsuarioRutUsuario(Integer usuarioRutUsuario) {
+    public void setUsuarioRutUsuario(String usuarioRutUsuario) {
         this.usuarioRutUsuario = usuarioRutUsuario;
     }
 

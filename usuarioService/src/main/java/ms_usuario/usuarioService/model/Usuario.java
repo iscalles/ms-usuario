@@ -10,7 +10,7 @@ import java.util.Date;
 public class Usuario {
     @Id
     @Column(name = "rut_usuario")
-    private Integer rutUsuario;
+    private String rutUsuario;
 
     @Column(name = "nombre_usuario", nullable = false, length = 40)
     private String nombreUsuario;
@@ -30,7 +30,7 @@ public class Usuario {
     // Constructores
     public Usuario() {}
 
-    public Usuario(Integer rutUsuario, String nombreUsuario, String primerApellidoUsuario,
+    public Usuario(String rutUsuario, String nombreUsuario, String primerApellidoUsuario,
                    String segundoApellidoUsuario, String correoUsuario, Date fechaNacUsuario) {
         this.rutUsuario = rutUsuario;
         this.nombreUsuario = nombreUsuario;
@@ -40,11 +40,11 @@ public class Usuario {
         this.fechaNacUsuario = fechaNacUsuario;
     }
 
-    public Integer getRutUsuario() {
+    public String getRutUsuario() {
         return rutUsuario;
     }
 
-    public void setRutUsuario(Integer rutUsuario) {
+    public void setRutUsuario(String rutUsuario) {
         this.rutUsuario = rutUsuario;
     }
 

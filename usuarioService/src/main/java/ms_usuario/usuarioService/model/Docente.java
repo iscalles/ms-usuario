@@ -8,7 +8,7 @@ public class Docente {
 
     @Id
     @Column(name = "USUARIO_rut_usuario")
-    private Integer usuarioRutUsuario;
+    private String usuarioRutUsuario;
 
     @Column(name = "titulo_profesional_docente", length = 200)
     private String tituloProfesionalDocente;
@@ -19,18 +19,18 @@ public class Docente {
     // Constructores
     public Docente() {}
 
-    public Docente(Integer usuarioRutUsuario, String tituloProfesionalDocente, String especialidadDocente) {
+    public Docente(String usuarioRutUsuario, String tituloProfesionalDocente, String especialidadDocente) {
         this.usuarioRutUsuario = usuarioRutUsuario;
         this.tituloProfesionalDocente = tituloProfesionalDocente;
         this.especialidadDocente = especialidadDocente;
     }
 
     // Getters y Setters
-    public Integer getUsuarioRutUsuario() {
+    public String getUsuarioRutUsuario() {
         return usuarioRutUsuario;
     }
 
-    public void setUsuarioRutUsuario(Integer usuarioRutUsuario) {
+    public void setUsuarioRutUsuario(String usuarioRutUsuario) {
         this.usuarioRutUsuario = usuarioRutUsuario;
     }
 
