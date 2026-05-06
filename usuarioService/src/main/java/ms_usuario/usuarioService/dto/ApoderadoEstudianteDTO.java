@@ -1,13 +1,16 @@
 package ms_usuario.usuarioService.dto;
 
 import jakarta.validation.constraints.*;
+import ms_usuario.usuarioService.validation.ValidRut;
 
 public class ApoderadoEstudianteDTO {
 
     @NotBlank(message = "El RUT del apoderado es requerido")
+    @ValidRut(message = "El RUT debe tener formato válido: xx.xxx.xxx-x")
     private String apoderadoRutUsuario;
 
     @NotBlank(message = "El RUT del estudiante es requerido")
+    @ValidRut(message = "El RUT debe tener formato válido: xx.xxx.xxx-x")
     private String estudianteRutUsuario;
 
     @NotBlank(message = "El parentesco es requerido")

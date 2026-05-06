@@ -1,10 +1,12 @@
 package ms_usuario.usuarioService.dto;
 
 import jakarta.validation.constraints.*;
+import ms_usuario.usuarioService.validation.ValidRut;
 
 public class ApoderadoDTO {
 
     @NotBlank(message = "El RUT del usuario es requerido")
+    @ValidRut(message = "El RUT debe tener formato válido: xx.xxx.xxx-x")
     private String usuarioRutUsuario;
 
     @Size(max = 200, message = "La dirección no puede exceder 200 caracteres")

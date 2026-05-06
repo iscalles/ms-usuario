@@ -1,11 +1,13 @@
 package ms_usuario.usuarioService.dto;
 
 import jakarta.validation.constraints.*;
+import ms_usuario.usuarioService.validation.ValidRut;
 import java.util.Date;
 
 public class EstudianteDTO {
 
     @NotBlank(message = "El RUT del usuario es requerido")
+    @ValidRut(message = "El RUT debe tener formato válido: xx.xxx.xxx-x")
     private String usuarioRutUsuario;
 
     @NotNull(message = "La fecha de ingreso es requerida")

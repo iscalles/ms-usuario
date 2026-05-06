@@ -1,11 +1,13 @@
 package ms_usuario.usuarioService.dto;
 
 import jakarta.validation.constraints.*;
+import ms_usuario.usuarioService.validation.ValidRut;
 import java.util.Date;
 
 public class UsuarioDTO {
 
     @NotBlank(message = "El RUT no puede estar vacío")
+    @ValidRut(message = "El RUT debe tener formato válido: xx.xxx.xxx-x")
     private String rutUsuario;
 
     @NotBlank(message = "El nombre es requerido")

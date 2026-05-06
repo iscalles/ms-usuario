@@ -1,10 +1,12 @@
 package ms_usuario.usuarioService.dto;
 
 import jakarta.validation.constraints.*;
+import ms_usuario.usuarioService.validation.ValidRut;
 
 public class DocenteDTO {
 
     @NotBlank(message = "El RUT del usuario es requerido")
+    @ValidRut(message = "El RUT del usuario debe tener formato válido: xx.xxx.xxx-x")
     private String usuarioRutUsuario;
 
     @Size(max = 200, message = "El título profesional no puede exceder 200 caracteres")
