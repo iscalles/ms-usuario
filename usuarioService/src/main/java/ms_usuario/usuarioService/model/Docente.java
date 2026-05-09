@@ -16,6 +16,10 @@ public class Docente {
     @Column(name = "especialidad_docente", length = 100)
     private String especialidadDocente;
 
+    @OneToOne
+    @JoinColumn(name = "USUARIO_rut_usuario", insertable = false, updatable = false)
+    private Usuario usuario;
+
     // Constructores
     public Docente() {}
 
@@ -49,5 +53,12 @@ public class Docente {
     public void setEspecialidadDocente(String especialidadDocente) {
         this.especialidadDocente = especialidadDocente;
     }
-}
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+}

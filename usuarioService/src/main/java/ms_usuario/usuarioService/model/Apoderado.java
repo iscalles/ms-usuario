@@ -15,6 +15,10 @@ public class Apoderado {
     @Column(name = "telefono_apoderado", length = 15)
     private String telefonoApoderado;
 
+    @OneToOne
+    @JoinColumn(name = "USUARIO_rut_usuario", insertable = false, updatable = false)
+    private Usuario usuario;
+
     // Constructores
     public Apoderado() {}
 
@@ -47,5 +51,13 @@ public class Apoderado {
 
     public void setTelefonoApoderado(String telefonoApoderado) {
         this.telefonoApoderado = telefonoApoderado;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }

@@ -6,6 +6,7 @@ import java.util.Date;
 @Entity
 @Table(name = "ESTUDIANTE")
 public class Estudiante {
+
     @Id
     @Column(name = "USUARIO_rut_usuario")
     private String usuarioRutUsuario;
@@ -15,6 +16,10 @@ public class Estudiante {
 
     @Column(name = "estado_estudiante", length = 40)
     private String estadoEstudiante;
+
+    @OneToOne
+    @JoinColumn(name = "USUARIO_rut_usuario", insertable = false, updatable = false)
+    private Usuario usuario;
 
     // Constructores
     public Estudiante() {}
@@ -48,5 +53,13 @@ public class Estudiante {
 
     public void setEstadoEstudiante(String estadoEstudiante) {
         this.estadoEstudiante = estadoEstudiante;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }

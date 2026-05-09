@@ -1,20 +1,26 @@
 package ms_usuario.usuarioService.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
-@Entity  // mapea la tabla
+@Entity
 @Table(name = "APODERADO_ESTUDIANTE")
 public class ApoderadoEstudiante {
 
-    @EmbeddedId  // ← Embebe la clave compuesta aquí
+    @EmbeddedId
     private ApoderadoEstudianteId id;
 
     @Column(name = "parentesco_apoderado_estudiante", length = 40)
     private String parentescoApoderadoEstudiante;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "APODERADO_USUARIO_rut_usuario", insertable = false, updatable = false)
+    private Apoderado apoderado;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ESTUDIANTE_USUARIO_rut_usuario", insertable = false, updatable = false)
+    private Estudiante estudiante;
+
+    // Constructores
     public ApoderadoEstudiante() {}
 
     public ApoderadoEstudiante(ApoderadoEstudianteId id, String parentescoApoderadoEstudiante) {
@@ -22,6 +28,7 @@ public class ApoderadoEstudiante {
         this.parentescoApoderadoEstudiante = parentescoApoderadoEstudiante;
     }
 
+    // Getters y Setters
     public ApoderadoEstudianteId getId() {
         return id;
     }
@@ -36,5 +43,21 @@ public class ApoderadoEstudiante {
 
     public void setParentescoApoderadoEstudiante(String parentescoApoderadoEstudiante) {
         this.parentescoApoderadoEstudiante = parentescoApoderadoEstudiante;
+    }
+
+    public Apoderado getApoderado() {
+        return apoderado;
+    }
+
+    public void setApoderado(Apoderado apoderado) {
+        this.apoderado = apoderado;
+    }
+
+    public Estudiante getEstudiante() {
+        return estudiante;
+    }
+
+    public void setEstudiante(Estudiante estudiante) {
+        this.estudiante = estudiante;
     }
 }

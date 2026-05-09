@@ -5,8 +5,6 @@ import java.util.Date;
 
 @Entity
 @Table(name = "USUARIO")
-
-
 public class Usuario {
     @Id
     @Column(name = "rut_usuario")
@@ -26,6 +24,16 @@ public class Usuario {
 
     @Column(name = "fecha_nac_usuario")
     private Date fechaNacUsuario;
+
+    // Relaciones one-to-one con cascade
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Docente docente;
+
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Estudiante estudiante;
+
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Apoderado apoderado;
 
     // Constructores
     public Usuario() {}
@@ -86,5 +94,29 @@ public class Usuario {
 
     public void setFechaNacUsuario(Date fechaNacUsuario) {
         this.fechaNacUsuario = fechaNacUsuario;
+    }
+
+    public Docente getDocente() {
+        return docente;
+    }
+
+    public void setDocente(Docente docente) {
+        this.docente = docente;
+    }
+
+    public Estudiante getEstudiante() {
+        return estudiante;
+    }
+
+    public void setEstudiante(Estudiante estudiante) {
+        this.estudiante = estudiante;
+    }
+
+    public Apoderado getApoderado() {
+        return apoderado;
+    }
+
+    public void setApoderado(Apoderado apoderado) {
+        this.apoderado = apoderado;
     }
 }
