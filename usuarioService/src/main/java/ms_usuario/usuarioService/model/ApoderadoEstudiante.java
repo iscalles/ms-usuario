@@ -13,11 +13,11 @@ public class ApoderadoEstudiante {
     private String parentescoApoderadoEstudiante;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "APODERADO_USUARIO_rut_usuario", insertable = false, updatable = false)
+    @JoinColumn(name = "id_apoderado", insertable = false, updatable = false)
     private Apoderado apoderado;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ESTUDIANTE_USUARIO_rut_usuario", insertable = false, updatable = false)
+    @JoinColumn(name = "id_estudiante", insertable = false, updatable = false)
     private Estudiante estudiante;
 
     // Constructores

@@ -1,7 +1,8 @@
 package ms_usuario.usuarioService.controller;
 
-import ms_usuario.usuarioService.model.Usuario;
 import ms_usuario.usuarioService.dto.UsuarioDTO;
+import ms_usuario.usuarioService.dto.UsuarioDTOResponse;
+import ms_usuario.usuarioService.dto.UsuarioDTOInternal;
 import ms_usuario.usuarioService.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -9,48 +10,70 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuario")
 public class UsuarioController {
-    private final UsuarioService service;
+    private final UsuarioService usuarioService;
 
-    public UsuarioController(UsuarioService service) {
-        this.service = service;
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
     @GetMapping()
-    public ResponseEntity<List<Usuario>> listarUsuarios() {
-        return ResponseEntity.ok(service.listarUsuarios());
+    public ResponseEntity<List<UsuarioDTOResponse>> listarUsuarios() {
+        return ResponseEntity.ok(usuarioService.listarUsuarios());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable String id) {
-        Usuario usuario = service.buscarUsuarioPorId(id);
-        if (usuario != null) {
-            return ResponseEntity.ok(usuario);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<UsuarioDTOResponse> buscarUsuarioPorId(@PathVariable Long id) {
+        Optional <UsuarioDTOResponse> usuario = usuarioService.buscarUsuarioPorId(id);
+        return usuario.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/interno/rut/{rut}")
+    public ResponseEntity<UsuarioDTOInternal> buscarUsuarioPorRut(@PathVariable String rut) {
+        Optional<UsuarioDTOInternal> usuario = usuarioService.buscarUsuarioPorRut(rut);
+        return usuario.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/interno/correo/{correo}")
+    public ResponseEntity<UsuarioDTOInternal> buscarUsuarioPorCorreo(@PathVariable String correo) {
+        Optional<UsuarioDTOInternal> usuario = usuarioService.buscarUsuarioPorCorreo(correo);
+        return usuario.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping()
-    public ResponseEntity<Usuario> crearUsuario(@Valid @RequestBody UsuarioDTO dto) {
-        Usuario usuarioCreado = service.crearUsuario(dto);
+    public ResponseEntity<UsuarioDTOResponse> crearUsuario(@Valid @RequestBody UsuarioDTO dto) {
+        UsuarioDTOResponse usuarioCreado = usuarioService.crearUsuario(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioCreado);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> actualizarUsuario(@PathVariable String id, @Valid @RequestBody UsuarioDTO dto) {
-        Usuario usuarioActualizado = service.actualizarUsuario(id, dto);
-        if (usuarioActualizado != null) {
-            return ResponseEntity.ok(usuarioActualizado);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<UsuarioDTOResponse> actualizarUsuario(
+            @PathVariable Long id,
+            @Valid @RequestBody UsuarioDTO dto) {
+        UsuarioDTOResponse usuarioActualizado = usuarioService.actualizarUsuario(id, dto);
+        return ResponseEntity.ok(usuarioActualizado);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarUsuario(@PathVariable String id) {
-        service.eliminarUsuario(id);
+    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
+        usuarioService.eliminarUsuario(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/existencia/rut/{rut}")
+    public ResponseEntity<Boolean> existeUsuarioPorRut(@PathVariable String rut) {
+        return ResponseEntity.ok(usuarioService.existeUsuarioPorRut(rut));
+    }
+
+    @GetMapping("/existencia/correo/{correo}")
+    public ResponseEntity<Boolean> existeUsuarioPorCorreo(@PathVariable String correo) {
+        return ResponseEntity.ok(usuarioService.existeUsuarioPorCorreo(correo));
     }
 }

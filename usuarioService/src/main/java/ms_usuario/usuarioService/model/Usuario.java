@@ -1,13 +1,21 @@
 package ms_usuario.usuarioService.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "USUARIO")
 public class Usuario {
+
     @Id
-    @Column(name = "rut_usuario")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_usuario_id")
+    @SequenceGenerator(name = "seq_usuario_id", sequenceName = "SEQ_USUARIO_ID", allocationSize = 1)
+    @Column(name = "id_usuario")
+    private Long idUsuario;
+
+    @Column(name = "rut_usuario", nullable = false, unique = true, length = 12)
     private String rutUsuario;
 
     @Column(name = "nombre_usuario", nullable = false, length = 40)
@@ -22,6 +30,7 @@ public class Usuario {
     @Column(name = "correo_usuario", nullable = false, unique = true, length = 100)
     private String correoUsuario;
 
+    @JsonFormat(pattern="yyyy-MM-dd")
     @Column(name = "fecha_nac_usuario")
     private Date fechaNacUsuario;
 
@@ -35,6 +44,12 @@ public class Usuario {
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Apoderado apoderado;
 
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Administrativo administrativo;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<UsuarioRol> roles;
+
     // Constructores
     public Usuario() {}
 
@@ -46,6 +61,15 @@ public class Usuario {
         this.segundoApellidoUsuario = segundoApellidoUsuario;
         this.correoUsuario = correoUsuario;
         this.fechaNacUsuario = fechaNacUsuario;
+    }
+
+    // Getters y Setters
+    public Long getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public String getRutUsuario() {
@@ -118,5 +142,21 @@ public class Usuario {
 
     public void setApoderado(Apoderado apoderado) {
         this.apoderado = apoderado;
+    }
+
+    public Administrativo getAdministrativo() {
+        return administrativo;
+    }
+
+    public void setAdministrativo(Administrativo administrativo) {
+        this.administrativo = administrativo;
+    }
+
+    public Set<UsuarioRol> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<UsuarioRol> roles) {
+        this.roles = roles;
     }
 }

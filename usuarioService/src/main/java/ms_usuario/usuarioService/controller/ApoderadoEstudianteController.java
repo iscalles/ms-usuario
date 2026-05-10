@@ -9,66 +9,61 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/apoderado-estudiante")
 public class ApoderadoEstudianteController {
-    private final ApoderadoEstudianteService service;
+    private final ApoderadoEstudianteService apoderadoEstudianteService;
 
-    public ApoderadoEstudianteController(ApoderadoEstudianteService service) {
-        this.service = service;
+    public ApoderadoEstudianteController(ApoderadoEstudianteService apoderadoEstudianteService) {
+        this.apoderadoEstudianteService = apoderadoEstudianteService;
     }
 
-    @GetMapping()
-    public ResponseEntity<List<ApoderadoEstudiante>> listarRelaciones() {
-        return ResponseEntity.ok(service.listarRelaciones());
+    @GetMapping("/apoderado/{idApoderado}/estudiantes")
+    public ResponseEntity<List<ApoderadoEstudiante>> obtenerEstudiantesDelApoderado(@PathVariable Long idApoderado) {
+        return ResponseEntity.ok(apoderadoEstudianteService.obtenerEstudiantesDelApoderado(idApoderado));
     }
-    @GetMapping("/{apoderadoRut}/{estudianteRut}")
+
+    @GetMapping("/estudiante/{idEstudiante}/apoderados")
+    public ResponseEntity<List<ApoderadoEstudiante>> obtenerApoderadosDelEstudiante(@PathVariable Long idEstudiante) {
+        return ResponseEntity.ok(apoderadoEstudianteService.obtenerApoderadosDelEstudiante(idEstudiante));
+    }
+    @GetMapping("/apoderado/{idApoderado}/estudiante/{idEstudiante}")
     public ResponseEntity<ApoderadoEstudiante> buscarRelacion(
-            @PathVariable String apoderadoRut,
-            @PathVariable String estudianteRut) {
-        ApoderadoEstudiante relacion = service.buscarRelacion(apoderadoRut, estudianteRut);
-        if (relacion != null) {
-            return ResponseEntity.ok(relacion);
-        }
-        return ResponseEntity.notFound().build();
-    }
-    @GetMapping("/apoderado/{apoderadoRut}")
-    public ResponseEntity<List<ApoderadoEstudiante>> buscarEstudiantesPorApoderado(
-            @PathVariable String apoderadoRut) {
-        List<ApoderadoEstudiante> estudiantes = service.buscarEstudiantesPorApoderado(apoderadoRut);
-        return ResponseEntity.ok(estudiantes);
+            @PathVariable Long idApoderado,
+            @PathVariable Long idEstudiante) {
+        Optional<ApoderadoEstudiante> relacion = apoderadoEstudianteService.buscarRelacion(idApoderado, idEstudiante);
+        return relacion.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/estudiante/{estudianteRut}")
-    public ResponseEntity<List<ApoderadoEstudiante>> buscarApoderadosPorEstudiante(
-            @PathVariable String estudianteRut) {
-        List<ApoderadoEstudiante> apoderados = service.buscarApoderadosPorEstudiante(estudianteRut);
-        return ResponseEntity.ok(apoderados);
-    }
     @PostMapping()
     public ResponseEntity<ApoderadoEstudiante> crearRelacion(@Valid @RequestBody ApoderadoEstudianteDTO dto) {
-        ApoderadoEstudiante relacionCreada = service.crearRelacion(dto);
+        ApoderadoEstudiante relacionCreada = apoderadoEstudianteService.crearRelacion(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(relacionCreada);
     }
 
-    @PutMapping("/{apoderadoRut}/{estudianteRut}")
+    @PutMapping("/apoderado/{idApoderado}/estudiante/{idEstudiante}/parentesco/{parentesco}")
     public ResponseEntity<ApoderadoEstudiante> actualizarRelacion(
-            @PathVariable String apoderadoRut,
-            @PathVariable String estudianteRut,
-            @Valid @RequestBody ApoderadoEstudianteDTO dto) {
-        ApoderadoEstudiante relacionActualizada = service.actualizarRelacion(apoderadoRut, estudianteRut, dto);
-        if (relacionActualizada != null) {
-            return ResponseEntity.ok(relacionActualizada);
-        }
-        return ResponseEntity.notFound().build();
+            @PathVariable Long idApoderado,
+            @PathVariable Long idEstudiante,
+            @PathVariable String parentesco) {
+        ApoderadoEstudiante relacionActualizada = apoderadoEstudianteService.actualizarRelacion(idApoderado, idEstudiante, parentesco);
+        return ResponseEntity.ok(relacionActualizada);
     }
 
-    @DeleteMapping("/{apoderadoRut}/{estudianteRut}")
+    @DeleteMapping("/apoderado/{idApoderado}/estudiante/{idEstudiante}")
     public ResponseEntity<Void> eliminarRelacion(
-            @PathVariable String apoderadoRut,
-            @PathVariable String estudianteRut) {
-        service.eliminarRelacion(apoderadoRut, estudianteRut);
+            @PathVariable Long idApoderado,
+            @PathVariable Long idEstudiante) {
+        apoderadoEstudianteService.eliminarRelacion(idApoderado, idEstudiante);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/existe/apoderado/{idApoderado}/estudiante/{idEstudiante}")
+    public ResponseEntity<Boolean> existeRelacion(
+            @PathVariable Long idApoderado,
+            @PathVariable Long idEstudiante) {
+        return ResponseEntity.ok(apoderadoEstudianteService.existeRelacion(idApoderado, idEstudiante));
     }
 }
