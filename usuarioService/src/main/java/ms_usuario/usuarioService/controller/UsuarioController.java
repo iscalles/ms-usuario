@@ -32,6 +32,13 @@ public class UsuarioController {
         return usuario.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+    /* endpoint interno para MS_AUTH, obtiene usuario completo por ID_USUARIO (incluye RUT y roles) GET /usuario/interno/{idUsuario}*/
+    @GetMapping("/interno/{idUsuario}")
+    public ResponseEntity<UsuarioDTOInternal> obtenerUsuarioInterno(@PathVariable Long idUsuario) {
+        Optional<UsuarioDTOInternal> usuario = usuarioService.buscarUsuarioPorIdInterno(idUsuario);
+        return usuario.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
     @GetMapping("/interno/rut/{rut}")
     public ResponseEntity<UsuarioDTOInternal> buscarUsuarioPorRut(@PathVariable String rut) {

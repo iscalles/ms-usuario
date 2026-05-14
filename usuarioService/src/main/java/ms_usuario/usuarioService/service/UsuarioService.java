@@ -23,4 +23,5 @@ public interface UsuarioService {
     boolean existeUsuarioPorRut(String rut);
     boolean existeUsuarioPorCorreo(String correo);
     Optional<Usuario> obtenerUsuarioConRoles(Long id);
+    Optional<UsuarioDTOInternal> buscarUsuarioPorIdInterno(Long idUsuario);
 }

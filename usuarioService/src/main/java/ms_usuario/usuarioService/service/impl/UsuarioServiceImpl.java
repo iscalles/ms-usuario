@@ -155,4 +155,10 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         return dto;
     }
+    /*Busca usuario por ID_USUARIO y devuelve DTO interno con RUT y roles */
+    @Override
+    public Optional<UsuarioDTOInternal> buscarUsuarioPorIdInterno(Long idUsuario) {
+        return usuarioRepository.findById(idUsuario)
+                .map(this::convertToInternalDTO);
+    }
 }
