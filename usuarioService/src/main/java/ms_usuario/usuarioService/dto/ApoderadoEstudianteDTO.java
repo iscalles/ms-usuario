@@ -1,34 +1,36 @@
 package ms_usuario.usuarioService.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class ApoderadoEstudianteDTO {
 
-    @NotBlank(message = "El RUT del apoderado es requerido")
-    private String apoderadoRutUsuario;
+    @NotNull(message = "El id del apoderado es requerido")
+    private Long idApoderado;
 
-    @NotBlank(message = "El RUT del estudiante es requerido")
-    private String estudianteRutUsuario;
+    @NotNull(message = "El id del estudiante es requerido")
+    private Long idEstudiante;
 
     @NotBlank(message = "El parentesco es requerido")
-    @Size(max = 40, message = "El parentesco no puede exceder 40 caracteres")
+    @Size(max = 40)
     private String parentescoApoderadoEstudiante;
 
     // Getters y Setters
-    public String getApoderadoRutUsuario() {
-        return apoderadoRutUsuario;
+    public Long getIdApoderado() {
+        return idApoderado;
     }
 
-    public void setApoderadoRutUsuario(String apoderadoRutUsuario) {
-        this.apoderadoRutUsuario = apoderadoRutUsuario;
+    public void setIdApoderado(Long idApoderado) {
+        this.idApoderado = idApoderado;
     }
 
-    public String getEstudianteRutUsuario() {
-        return estudianteRutUsuario;
+    public Long getIdEstudiante() {
+        return idEstudiante;
     }
 
-    public void setEstudianteRutUsuario(String estudianteRutUsuario) {
-        this.estudianteRutUsuario = estudianteRutUsuario;
+    public void setIdEstudiante(Long idEstudiante) {
+        this.idEstudiante = idEstudiante;
     }
 
     public String getParentescoApoderadoEstudiante() {

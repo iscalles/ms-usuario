@@ -1,21 +1,33 @@
 package ms_usuario.usuarioService.service.impl;
 
-import ms_usuario.usuarioService.model.Apoderado;
 import ms_usuario.usuarioService.dto.ApoderadoDTO;
+import ms_usuario.usuarioService.model.Apoderado;
+import ms_usuario.usuarioService.model.Usuario;
+import ms_usuario.usuarioService.model.UsuarioRol;
 import ms_usuario.usuarioService.repository.ApoderadoRepository;
+import ms_usuario.usuarioService.repository.UsuarioRepository;
+import ms_usuario.usuarioService.repository.UsuarioRolRepository;
 import ms_usuario.usuarioService.service.ApoderadoService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
 public class ApoderadoServiceImpl implements ApoderadoService {
-    private final ApoderadoRepository apoderadoRepository;
 
-    public ApoderadoServiceImpl(ApoderadoRepository apoderadoRepository) {
+    private final ApoderadoRepository apoderadoRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final UsuarioRolRepository usuarioRolRepository;
+
+    public ApoderadoServiceImpl(ApoderadoRepository apoderadoRepository,
+                                UsuarioRepository usuarioRepository,
+                                UsuarioRolRepository usuarioRolRepository) {
         this.apoderadoRepository = apoderadoRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.usuarioRolRepository = usuarioRolRepository;
     }
 
     @Override
@@ -24,39 +36,64 @@ public class ApoderadoServiceImpl implements ApoderadoService {
     }
 
     @Override
-    public Apoderado buscarApoderadoPorId(String id) {
-        return apoderadoRepository.findById(id).orElse(null);
+    public Optional<Apoderado> buscarApoderadoPorId(Long id) {
+        return apoderadoRepository.findById(id);
+    }
+
+    @Override
+    public Optional<Apoderado> buscarApoderadoPorIdUsuario(Long idUsuario) {
+        return apoderadoRepository.findByUsuario_IdUsuario(idUsuario);
     }
 
     @Override
     public Apoderado crearApoderado(ApoderadoDTO dto) {
+        Usuario usuario = usuarioRepository.findById(dto.getIdUsuario())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + dto.getIdUsuario()));
+
+        // Verificar que no existe apoderado para este usuario
+        if (apoderadoRepository.existsByUsuario_IdUsuario(dto.getIdUsuario())) {
+            throw new RuntimeException("Ya existe apoderado para usuario con id: " + dto.getIdUsuario());
+        }
+
         Apoderado apoderado = new Apoderado();
-        apoderado.setUsuarioRutUsuario(dto.getUsuarioRutUsuario());
+        apoderado.setUsuario(usuario);
+        apoderado.setDireccionApoderado(dto.getDireccionApoderado());
+        apoderado.setTelefonoApoderado(dto.getTelefonoApoderado());
+
+        Apoderado apoderadoGuardado = apoderadoRepository.save(apoderado);
+
+        // Asignar rol APODERADO al usuario (puede tener múltiples roles)
+        if (!usuarioRolRepository.existsByUsuario_IdUsuarioAndTipoRol(dto.getIdUsuario(), "APODERADO")) {
+            usuarioRolRepository.save(new UsuarioRol(usuario.getIdUsuario(), "APODERADO"));
+        }
+
+        return apoderadoGuardado;
+    }
+
+    @Override
+    public Apoderado actualizarApoderado(Long id, ApoderadoDTO dto) {
+        Apoderado apoderado = apoderadoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Apoderado no encontrado con id: " + id));
+
         apoderado.setDireccionApoderado(dto.getDireccionApoderado());
         apoderado.setTelefonoApoderado(dto.getTelefonoApoderado());
 
         return apoderadoRepository.save(apoderado);
     }
-    @Override
-    public Apoderado actualizarApoderado(String id, ApoderadoDTO dto) {
-        Apoderado apoderadoExistente = apoderadoRepository.findById(id).orElse(null);
-        if (apoderadoExistente != null) {
-            apoderadoExistente.setDireccionApoderado(dto.getDireccionApoderado());
-            apoderadoExistente.setTelefonoApoderado(dto.getTelefonoApoderado());
 
-            return apoderadoRepository.save(apoderadoExistente);
-        } else {
-            throw new RuntimeException("Apoderado no encontrado con id: " + id);
-        }
+    @Override
+    public void eliminarApoderado(Long id) {
+        Apoderado apoderado = apoderadoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Apoderado no encontrado con id: " + id));
+
+        Long idUsuario = apoderado.getUsuario().getIdUsuario();
+        apoderadoRepository.delete(apoderado);
+
+        // Nota: No se elimina el rol APODERADO automáticamente porque usuario podría tener otros roles
     }
 
     @Override
-    public void eliminarApoderado(String id) {
-        Apoderado apoderadoExistente = apoderadoRepository.findById(id).orElse(null);
-        if (apoderadoExistente != null) {
-            apoderadoRepository.delete(apoderadoExistente);
-        } else {
-            throw new RuntimeException("Apoderado no encontrado con id: " + id);
-        }
+    public boolean esApoderado(Long idUsuario) {
+        return apoderadoRepository.existsByUsuario_IdUsuario(idUsuario);
     }
 }

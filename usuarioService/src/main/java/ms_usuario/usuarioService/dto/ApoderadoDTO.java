@@ -1,26 +1,29 @@
 package ms_usuario.usuarioService.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class ApoderadoDTO {
 
-    @NotBlank(message = "El RUT del usuario es requerido")
-    private String usuarioRutUsuario;
+    @NotNull(message = "El id del usuario es requerido")
+    private Long idUsuario;
 
-    @Size(max = 200, message = "La dirección no puede exceder 200 caracteres")
+    @NotBlank(message = "La dirección es requerida")
+    @Size(max = 200)
     private String direccionApoderado;
 
-    @Size(max = 15, message = "El teléfono no puede exceder 15 caracteres")
-    @Pattern(regexp = "^[0-9+\\-()\\s]*$", message = "El teléfono debe contener solo números y caracteres válidos")
+    @NotBlank(message = "El teléfono es requerido")
+    @Size(max = 15)
     private String telefonoApoderado;
 
     // Getters y Setters
-    public String getUsuarioRutUsuario() {
-        return usuarioRutUsuario;
+    public Long getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setUsuarioRutUsuario(String usuarioRutUsuario) {
-        this.usuarioRutUsuario = usuarioRutUsuario;
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public String getDireccionApoderado() {

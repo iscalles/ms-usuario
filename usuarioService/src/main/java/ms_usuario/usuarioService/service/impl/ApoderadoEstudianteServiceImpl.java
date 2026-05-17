@@ -1,81 +1,109 @@
 package ms_usuario.usuarioService.service.impl;
 
+import ms_usuario.usuarioService.dto.ApoderadoEstudianteDTO;
 import ms_usuario.usuarioService.model.ApoderadoEstudiante;
 import ms_usuario.usuarioService.model.ApoderadoEstudianteId;
-import ms_usuario.usuarioService.dto.ApoderadoEstudianteDTO;
+import ms_usuario.usuarioService.model.Apoderado;
+import ms_usuario.usuarioService.model.Estudiante;
 import ms_usuario.usuarioService.repository.ApoderadoEstudianteRepository;
+import ms_usuario.usuarioService.repository.ApoderadoRepository;
+import ms_usuario.usuarioService.repository.EstudianteRepository;
 import ms_usuario.usuarioService.service.ApoderadoEstudianteService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
 public class ApoderadoEstudianteServiceImpl implements ApoderadoEstudianteService {
-    private final ApoderadoEstudianteRepository repository;
 
-    public ApoderadoEstudianteServiceImpl(ApoderadoEstudianteRepository repository) {
-        this.repository = repository;
+    private final ApoderadoEstudianteRepository apoderadoEstudianteRepository;
+    private final ApoderadoRepository apoderadoRepository;
+    private final EstudianteRepository estudianteRepository;
+
+    public ApoderadoEstudianteServiceImpl(ApoderadoEstudianteRepository apoderadoEstudianteRepository,
+                                          ApoderadoRepository apoderadoRepository,
+                                          EstudianteRepository estudianteRepository) {
+        this.apoderadoEstudianteRepository = apoderadoEstudianteRepository;
+        this.apoderadoRepository = apoderadoRepository;
+        this.estudianteRepository = estudianteRepository;
     }
 
     @Override
-    public List<ApoderadoEstudiante> listarRelaciones() {
-        return repository.findAll();
+    public List<ApoderadoEstudiante> obtenerEstudiantesDelApoderado(Long idApoderado) {
+        // Verificar que existe el apoderado
+        apoderadoRepository.findById(idApoderado)
+                .orElseThrow(() -> new RuntimeException("Apoderado no encontrado con id: " + idApoderado));
+
+        return apoderadoEstudianteRepository.findByIdApoderadoIdUsuario(idApoderado);
     }
 
     @Override
-    public ApoderadoEstudiante buscarRelacion(String apoderadoRut, String estudianteRut) {
-        ApoderadoEstudianteId id = new ApoderadoEstudianteId(apoderadoRut, estudianteRut);
-        return repository.findById(id).orElse(null);
+    public List<ApoderadoEstudiante> obtenerApoderadosDelEstudiante(Long idEstudiante) {
+        // Verificar que existe el estudiante
+        estudianteRepository.findById(idEstudiante)
+                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado con id: " + idEstudiante));
+
+        return apoderadoEstudianteRepository.findByIdEstudianteIdUsuario(idEstudiante);
     }
 
     @Override
-    public List<ApoderadoEstudiante> buscarEstudiantesPorApoderado(String apoderadoRut) {
-        return repository.findByIdApoderadoRutUsuario(apoderadoRut);
-    }
-
-    @Override
-    public List<ApoderadoEstudiante> buscarApoderadosPorEstudiante(String estudianteRut) {
-        return repository.findByIdEstudianteRutUsuario(estudianteRut);
+    public Optional<ApoderadoEstudiante> buscarRelacion(Long idApoderado, Long idEstudiante) {
+        return apoderadoEstudianteRepository.findByIdApoderadoIdUsuarioAndIdEstudianteIdUsuario(idApoderado, idEstudiante);
     }
 
     @Override
     public ApoderadoEstudiante crearRelacion(ApoderadoEstudianteDTO dto) {
+        // Verificar que existe apoderado
+        Apoderado apoderado = apoderadoRepository.findById(dto.getIdApoderado())
+                .orElseThrow(() -> new RuntimeException("Apoderado no encontrado con id: " + dto.getIdApoderado()));
+
+        // Verificar que existe estudiante
+        Estudiante estudiante = estudianteRepository.findById(dto.getIdEstudiante())
+                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado con id: " + dto.getIdEstudiante()));
+
+        // Verificar que no existe relación
+        if (apoderadoEstudianteRepository.findByIdApoderadoIdUsuarioAndIdEstudianteIdUsuario(
+                dto.getIdApoderado(), dto.getIdEstudiante()).isPresent()) {
+            throw new RuntimeException("Ya existe relación apoderado-estudiante");
+        }
+
         ApoderadoEstudianteId id = new ApoderadoEstudianteId(
-                dto.getApoderadoRutUsuario(),
-                dto.getEstudianteRutUsuario()
+                apoderado.getUsuario().getIdUsuario(),
+                estudiante.getUsuario().getIdUsuario()
         );
 
         ApoderadoEstudiante relacion = new ApoderadoEstudiante();
         relacion.setId(id);
         relacion.setParentescoApoderadoEstudiante(dto.getParentescoApoderadoEstudiante());
+        relacion.setApoderado(apoderado);
+        relacion.setEstudiante(estudiante);
 
-        return repository.save(relacion);
+        return apoderadoEstudianteRepository.save(relacion);
     }
 
     @Override
-    public ApoderadoEstudiante actualizarRelacion(String apoderadoRut, String estudianteRut, ApoderadoEstudianteDTO dto) {
-        ApoderadoEstudianteId id = new ApoderadoEstudianteId(apoderadoRut, estudianteRut);
-        ApoderadoEstudiante relacionExistente = repository.findById(id).orElse(null);
+    public ApoderadoEstudiante actualizarRelacion(Long idApoderado, Long idEstudiante, String parentesco) {
+        ApoderadoEstudiante relacion = apoderadoEstudianteRepository
+                .findByIdApoderadoIdUsuarioAndIdEstudianteIdUsuario(idApoderado, idEstudiante)
+                .orElseThrow(() -> new RuntimeException("Relación no encontrada"));
 
-        if (relacionExistente != null) {
-            relacionExistente.setParentescoApoderadoEstudiante(dto.getParentescoApoderadoEstudiante());
-            return repository.save(relacionExistente);
-        } else {
-            throw new RuntimeException("Relación no encontrada entre apoderado: " + apoderadoRut + " y estudiante: " + estudianteRut);
-        }
+        relacion.setParentescoApoderadoEstudiante(parentesco);
+        return apoderadoEstudianteRepository.save(relacion);
     }
 
     @Override
-    public void eliminarRelacion(String apoderadoRut, String estudianteRut) {
-        ApoderadoEstudianteId id = new ApoderadoEstudianteId(apoderadoRut, estudianteRut);
-        ApoderadoEstudiante relacionExistente = repository.findById(id).orElse(null);
+    public void eliminarRelacion(Long idApoderado, Long idEstudiante) {
+        ApoderadoEstudianteId id = new ApoderadoEstudianteId(idApoderado, idEstudiante);
+        apoderadoEstudianteRepository.deleteById(id);
+    }
 
-        if (relacionExistente != null) {
-            repository.delete(relacionExistente);
-        } else {
-            throw new RuntimeException("Relación no encontrada entre apoderado: " + apoderadoRut + " y estudiante: " + estudianteRut);
-        }
+    @Override
+    public boolean existeRelacion(Long idApoderado, Long idEstudiante) {
+        return apoderadoEstudianteRepository
+                .findByIdApoderadoIdUsuarioAndIdEstudianteIdUsuario(idApoderado, idEstudiante)
+                .isPresent();
     }
 }

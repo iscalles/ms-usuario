@@ -1,28 +1,30 @@
 package ms_usuario.usuarioService.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import java.util.Date;
 
 public class EstudianteDTO {
 
-    @NotBlank(message = "El RUT del usuario es requerido")
-    private String usuarioRutUsuario;
+    @NotNull(message = "El id del usuario es requerido")
+    private Long idUsuario;
 
     @NotNull(message = "La fecha de ingreso es requerida")
     @PastOrPresent(message = "La fecha de ingreso no puede ser futura")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date fechaIngresoEstudiante;
 
     @NotBlank(message = "El estado del estudiante es requerido")
-    @Size(max = 40, message = "El estado no puede exceder 40 caracteres")
+    @Size(max = 40)
     private String estadoEstudiante;
 
     // Getters y Setters
-    public String getUsuarioRutUsuario() {
-        return usuarioRutUsuario;
+    public Long getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setUsuarioRutUsuario(String usuarioRutUsuario) {
-        this.usuarioRutUsuario = usuarioRutUsuario;
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public Date getFechaIngresoEstudiante() {

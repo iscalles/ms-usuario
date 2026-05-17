@@ -1,25 +1,31 @@
 package ms_usuario.usuarioService.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class DocenteDTO {
 
-    @NotBlank(message = "El RUT del usuario es requerido")
-    private String usuarioRutUsuario;
+    @NotNull(message = "El id del usuario es requerido")
+    private Long idUsuario;
 
-    @Size(max = 200, message = "El título profesional no puede exceder 200 caracteres")
+    @NotBlank(message = "El título profesional es requerido")
+    @Size(max = 200)
     private String tituloProfesionalDocente;
 
-    @Size(max = 100, message = "La especialidad no puede exceder 100 caracteres")
+    @NotBlank(message = "La especialidad es requerida")
+    @Size(max = 100)
     private String especialidadDocente;
 
+    private String estadoDocente = "ACTIVO";
+
     // Getters y Setters
-    public String getUsuarioRutUsuario() {
-        return usuarioRutUsuario;
+    public Long getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setUsuarioRutUsuario(String usuarioRutUsuario) {
-        this.usuarioRutUsuario = usuarioRutUsuario;
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public String getTituloProfesionalDocente() {
@@ -36,5 +42,13 @@ public class DocenteDTO {
 
     public void setEspecialidadDocente(String especialidadDocente) {
         this.especialidadDocente = especialidadDocente;
+    }
+
+    public String getEstadoDocente() {
+        return estadoDocente;
+    }
+
+    public void setEstadoDocente(String estadoDocente) {
+        this.estadoDocente = estadoDocente;
     }
 }

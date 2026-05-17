@@ -4,11 +4,16 @@ import ms_usuario.usuarioService.model.Docente;
 import ms_usuario.usuarioService.dto.DocenteDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DocenteService {
     List<Docente> listarDocentes();
-    Docente buscarDocentePorId(String id);
+    Optional <Docente> buscarDocentePorId(Long id);
+    Optional<Docente> buscarDocentePorIdUsuario(Long idUsuario);
+    List<Docente> obtenerDocentesPorEspecialidad(String especialidad);
+    List<Docente> obtenerDocentesPorEstado(String estado);
     Docente crearDocente(DocenteDTO dto);
-    Docente actualizarDocente(String id, DocenteDTO dto);
-    void eliminarDocente(String id);
+    Docente actualizarDocente(Long id, DocenteDTO dto);
+    void eliminarDocente(Long id);
+    boolean esDocente(Long idUsuario);
 }

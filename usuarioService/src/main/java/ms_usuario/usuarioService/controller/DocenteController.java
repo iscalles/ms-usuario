@@ -9,48 +9,68 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/docente")
 public class DocenteController {
-    private final DocenteService service;
+    private final DocenteService docenteService;
 
-    public DocenteController(DocenteService service) {
-        this.service = service;
+    public DocenteController(DocenteService docenteService) {
+        this.docenteService = docenteService;
     }
 
     @GetMapping()
     public ResponseEntity<List<Docente>> listarDocentes() {
-        return ResponseEntity.ok(service.listarDocentes());
+        return ResponseEntity.ok(docenteService.listarDocentes());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Docente> buscarDocentePorId(@PathVariable String id) {
-        Docente docente = service.buscarDocentePorId(id);
-        if (docente != null) {
-            return ResponseEntity.ok(docente);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Docente> buscarDocentePorId(@PathVariable Long id) {
+        Optional<Docente> docente = docenteService.buscarDocentePorId(id);
+        return docente.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/usuario/{idUsuario}")
+    public ResponseEntity<Docente> buscarDocentePorIdUsuario(@PathVariable Long idUsuario) {
+        Optional<Docente> docente = docenteService.buscarDocentePorIdUsuario(idUsuario);
+        return docente.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/especialidad/{especialidad}")
+    public ResponseEntity<List<Docente>> obtenerDocentesPorEspecialidad(@PathVariable String especialidad) {
+        return ResponseEntity.ok(docenteService.obtenerDocentesPorEspecialidad(especialidad));
+    }
+
+    @GetMapping("/estado/{estado}")
+    public ResponseEntity<List<Docente>> obtenerDocentesPorEstado(@PathVariable String estado) {
+        return ResponseEntity.ok(docenteService.obtenerDocentesPorEstado(estado));
     }
 
     @PostMapping()
     public ResponseEntity<Docente> crearDocente(@Valid @RequestBody DocenteDTO dto) {
-        Docente docenteCreado = service.crearDocente(dto);
+        Docente docenteCreado = docenteService.crearDocente(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(docenteCreado);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Docente> actualizarDocente(@PathVariable String id, @Valid @RequestBody DocenteDTO dto) {
-        Docente docenteActualizado = service.actualizarDocente(id, dto);
-        if (docenteActualizado != null) {
-            return ResponseEntity.ok(docenteActualizado);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Docente> actualizarDocente(
+            @PathVariable Long id,
+            @Valid @RequestBody DocenteDTO dto) {
+        Docente docenteActualizado = docenteService.actualizarDocente(id, dto);
+        return ResponseEntity.ok(docenteActualizado);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarDocente(@PathVariable String id) {
-        service.eliminarDocente(id);
+    public ResponseEntity<Void> eliminarDocente(@PathVariable Long id) {
+        docenteService.eliminarDocente(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/verificar/usuario/{idUsuario}")
+    public ResponseEntity<Boolean> esDocente(@PathVariable Long idUsuario) {
+        return ResponseEntity.ok(docenteService.esDocente(idUsuario));
     }
 }

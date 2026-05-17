@@ -1,42 +1,51 @@
 package ms_usuario.usuarioService.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.*;
-import ms_usuario.usuarioService.validation.ValidRut;
 import java.util.Date;
+import java.util.Set;
 
-public class UsuarioDTO {
+/**
+ * DTO de respuesta para Usuario
+ * NO expone información sensible como RUT
+ * Usado para respuestas públicas de API
+ */
+public class UsuarioDTOResponse {
 
-    @NotBlank(message = "El RUT no puede estar vacío")
-    @ValidRut(message = "El RUT debe tener formato válido: xx.xxx.xxx-x")
-    private String rutUsuario;
+    private Long idUsuario;
 
-    @NotBlank(message = "El nombre es requerido")
-    @Size(min = 2, max = 40)
     private String nombreUsuario;
 
-    @NotBlank(message = "El primer apellido es requerido")
-    @Size(min = 2, max = 40)
     private String primerApellidoUsuario;
 
-    @Size(max = 40)
     private String segundoApellidoUsuario;
 
-    @NotBlank(message = "El correo es requerido")
-    @Email(message = "El correo debe ser válido")
     private String correoUsuario;
 
-    @PastOrPresent(message = "La fecha de nacimiento no puede ser futura")
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date fechaNacUsuario;
 
-    // Getters y Setters
-    public String getRutUsuario() {
-        return rutUsuario;
+    private Set<String> roles; // DOCENTE, ESTUDIANTE, APODERADO, ADMINISTRATIVO
+
+    // Constructores
+    public UsuarioDTOResponse() {}
+
+    public UsuarioDTOResponse(Long idUsuario, String nombreUsuario, String primerApellidoUsuario,
+                              String segundoApellidoUsuario, String correoUsuario, Date fechaNacUsuario) {
+        this.idUsuario = idUsuario;
+        this.nombreUsuario = nombreUsuario;
+        this.primerApellidoUsuario = primerApellidoUsuario;
+        this.segundoApellidoUsuario = segundoApellidoUsuario;
+        this.correoUsuario = correoUsuario;
+        this.fechaNacUsuario = fechaNacUsuario;
     }
 
-    public void setRutUsuario(String rutUsuario) {
-        this.rutUsuario = rutUsuario;
+    // Getters y Setters
+    public Long getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public String getNombreUsuario() {
@@ -77,5 +86,13 @@ public class UsuarioDTO {
 
     public void setFechaNacUsuario(Date fechaNacUsuario) {
         this.fechaNacUsuario = fechaNacUsuario;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 }
