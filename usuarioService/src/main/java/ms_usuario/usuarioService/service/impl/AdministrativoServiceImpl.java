@@ -73,7 +73,7 @@ public class AdministrativoServiceImpl implements AdministrativoService {
         Administrativo administrativoGuardado = administrativoRepository.save(administrativo);
 
         // Asignar rol ADMINISTRATIVO al usuario
-        if (!usuarioRolRepository.existsByUsuario_IdUsuarioAndTipoRol(dto.getIdUsuario(), "ADMINISTRATIVO")) {
+        if (!usuarioRolRepository.existsByUsuario_IdUsuarioAndId_TipoRol(dto.getIdUsuario(), "ADMINISTRATIVO")) {
             usuarioRolRepository.save(new UsuarioRol(usuario.getIdUsuario(), "ADMINISTRATIVO"));
         }
 

@@ -63,7 +63,7 @@ public class ApoderadoServiceImpl implements ApoderadoService {
         Apoderado apoderadoGuardado = apoderadoRepository.save(apoderado);
 
         // Asignar rol APODERADO al usuario (puede tener múltiples roles)
-        if (!usuarioRolRepository.existsByUsuario_IdUsuarioAndTipoRol(dto.getIdUsuario(), "APODERADO")) {
+        if (!usuarioRolRepository.existsByUsuario_IdUsuarioAndId_TipoRol(dto.getIdUsuario(), "APODERADO")) {
             usuarioRolRepository.save(new UsuarioRol(usuario.getIdUsuario(), "APODERADO"));
         }
 
