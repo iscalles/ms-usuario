@@ -30,7 +30,6 @@ public class UsuarioRolServiceImpl implements UsuarioRolService {
     public List<UsuarioRol> obtenerRolesDelUsuario(Long idUsuario) {
         usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + idUsuario));
-
         return usuarioRolRepository.findByUsuario_IdUsuario(idUsuario);
     }
 
@@ -38,7 +37,6 @@ public class UsuarioRolServiceImpl implements UsuarioRolService {
     public Set<String> obtenerRolesComoString(Long idUsuario) {
         usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + idUsuario));
-
         return usuarioRolRepository.findByUsuario_IdUsuario(idUsuario)
                 .stream()
                 .map(UsuarioRol::getTipoRol)
@@ -50,8 +48,9 @@ public class UsuarioRolServiceImpl implements UsuarioRolService {
         Usuario usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + idUsuario));
 
-        Optional<UsuarioRol> rolExistente = usuarioRolRepository
-                .findByUsuario_IdUsuarioAndTipoRol(idUsuario, tipoRol);
+        // Usa Id_TipoRol porque tipoRol es parte del @EmbeddedId
+        Optional<UsuarioRol> rolExistente =
+                usuarioRolRepository.findByUsuario_IdUsuarioAndId_TipoRol(idUsuario, tipoRol);
 
         if (rolExistente.isPresent()) {
             throw new RuntimeException("Usuario ya tiene el rol: " + tipoRol);
@@ -63,21 +62,20 @@ public class UsuarioRolServiceImpl implements UsuarioRolService {
 
     @Override
     public boolean tieneRol(Long idUsuario, String tipoRol) {
-        return usuarioRolRepository.existsByUsuario_IdUsuarioAndTipoRol(idUsuario, tipoRol);
+        return usuarioRolRepository.existsByUsuario_IdUsuarioAndId_TipoRol(idUsuario, tipoRol);
     }
 
     @Override
     public List<UsuarioRol> obtenerUsuariosPorRol(String tipoRol) {
-        return usuarioRolRepository.findByTipoRol(tipoRol);
+        return usuarioRolRepository.findById_TipoRol(tipoRol);
     }
 
     @Override
     public void eliminarRol(Long idUsuario, String tipoRol) {
-        usuarioRolRepository.findByUsuario_IdUsuarioAndTipoRol(idUsuario, tipoRol)
+        UsuarioRol rol = usuarioRolRepository
+                .findByUsuario_IdUsuarioAndId_TipoRol(idUsuario, tipoRol)
                 .orElseThrow(() -> new RuntimeException("Usuario no tiene el rol: " + tipoRol));
-
-        usuarioRolRepository.findByUsuario_IdUsuarioAndTipoRol(idUsuario, tipoRol)
-                .ifPresent(usuarioRolRepository::delete);
+        usuarioRolRepository.delete(rol);
     }
 
     @Override
