@@ -1,5 +1,6 @@
 package ms_usuario.usuarioService.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,10 +13,13 @@ public class ApoderadoEstudiante {
     @Column(name = "parentesco_apoderado_estudiante", length = 40)
     private String parentescoApoderadoEstudiante;
 
+    // Ignorados para evitar ciclos al serializar la lista de relaciones
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_apoderado", insertable = false, updatable = false)
     private Apoderado apoderado;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_estudiante", insertable = false, updatable = false)
     private Estudiante estudiante;

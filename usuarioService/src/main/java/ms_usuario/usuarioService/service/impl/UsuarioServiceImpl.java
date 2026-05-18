@@ -37,6 +37,14 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    public List<UsuarioDTOInternal> listarUsuariosInterno() {
+        return usuarioRepository.findAll()
+                .stream()
+                .map(this::convertToInternalDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Optional<UsuarioDTOResponse> buscarUsuarioPorId(Long id) {
         return usuarioRepository.findById(id)
                 .map(this::convertToResponseDTO);

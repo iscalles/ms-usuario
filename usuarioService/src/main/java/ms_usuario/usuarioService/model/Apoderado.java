@@ -1,5 +1,6 @@
 package ms_usuario.usuarioService.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.Set;
 
@@ -22,6 +23,8 @@ public class Apoderado {
     @Column(name = "telefono_apoderado", length = 15)
     private String telefonoApoderado;
 
+    // Lado inverso — ignorado para evitar: Apoderado→estudiantes→ApoderadoEstudiante→apoderado→...
+    @JsonIgnore
     @OneToMany(mappedBy = "apoderado", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ApoderadoEstudiante> estudiantes;
 
