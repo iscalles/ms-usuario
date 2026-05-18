@@ -26,6 +26,11 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.listarUsuarios());
     }
 
+    @GetMapping("/interno")
+    public ResponseEntity<List<UsuarioDTOInternal>> listarUsuariosInterno() {
+        return ResponseEntity.ok(usuarioService.listarUsuariosInterno());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDTOResponse> buscarUsuarioPorId(@PathVariable Long id) {
         Optional <UsuarioDTOResponse> usuario = usuarioService.buscarUsuarioPorId(id);
