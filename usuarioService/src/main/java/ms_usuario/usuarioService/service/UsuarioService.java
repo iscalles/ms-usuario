@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface UsuarioService {
     /*Listar todos los usuarios (respuesta pública sin RUT)*/
     List<UsuarioDTOResponse> listarUsuarios();
+    /*Listar todos los usuarios con RUT incluido (solo para uso administrativo)*/
+    List<UsuarioDTOInternal> listarUsuariosInterno();
     /*Listar todos los usuarios (respuesta pública sin RUT)*/
     Optional <UsuarioDTOResponse> buscarUsuarioPorId(Long id);
     /*Buscar usuario por RUT (respuesta INTERNA - solo MS_USUARIO)*/

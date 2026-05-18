@@ -73,8 +73,10 @@ public class DocenteServiceImpl implements DocenteService {
 
         Docente docenteGuardado = docenteRepository.save(docente);
 
-        // Asignar rol DOCENTE al usuario
-        usuarioRolRepository.save(new UsuarioRol(usuario.getIdUsuario(), "DOCENTE"));
+        // Asignar rol DOCENTE solo si no lo tiene aún (evita ORA-00001)
+        if (!usuarioRolRepository.existsByUsuario_IdUsuarioAndId_TipoRol(usuario.getIdUsuario(), "DOCENTE")) {
+            usuarioRolRepository.save(new UsuarioRol(usuario.getIdUsuario(), "DOCENTE"));
+        }
 
         return docenteGuardado;
     }
@@ -99,8 +101,9 @@ public class DocenteServiceImpl implements DocenteService {
         Long idUsuario = docente.getUsuario().getIdUsuario();
         docenteRepository.delete(docente);
 
-        // Eliminar rol DOCENTE del usuario
-        usuarioRolRepository.deleteByUsuario_IdUsuario(idUsuario);
+        // Eliminar solo el rol DOCENTE (no los demás roles que pueda tener el usuario)
+        usuarioRolRepository.findByUsuario_IdUsuarioAndId_TipoRol(idUsuario, "DOCENTE")
+                .ifPresent(usuarioRolRepository::delete);
     }
 
     @Override

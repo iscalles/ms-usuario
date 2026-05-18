@@ -1,6 +1,7 @@
 package ms_usuario.usuarioService.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.Set;
@@ -34,19 +35,25 @@ public class Usuario {
     @Column(name = "fecha_nac_usuario")
     private Date fechaNacUsuario;
 
-    // Relaciones one-to-one con cascade
+    // Lados inversos de las relaciones (mappedBy) — se ignoran en la serialización JSON
+    // para evitar ciclos infinitos: Estudiante→Usuario→Estudiante→...
+    @JsonIgnore
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Docente docente;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Estudiante estudiante;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Apoderado apoderado;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Administrativo administrativo;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<UsuarioRol> roles;
 

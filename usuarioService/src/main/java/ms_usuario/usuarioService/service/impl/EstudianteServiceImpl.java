@@ -68,8 +68,10 @@ public class EstudianteServiceImpl implements EstudianteService {
 
         Estudiante estudianteGuardado = estudianteRepository.save(estudiante);
 
-        // Asignar rol ESTUDIANTE al usuario
-        usuarioRolRepository.save(new UsuarioRol(usuario.getIdUsuario(), "ESTUDIANTE"));
+        // Asignar rol ESTUDIANTE solo si no lo tiene aún (evita ORA-00001)
+        if (!usuarioRolRepository.existsByUsuario_IdUsuarioAndId_TipoRol(usuario.getIdUsuario(), "ESTUDIANTE")) {
+            usuarioRolRepository.save(new UsuarioRol(usuario.getIdUsuario(), "ESTUDIANTE"));
+        }
 
         return estudianteGuardado;
     }
@@ -93,8 +95,9 @@ public class EstudianteServiceImpl implements EstudianteService {
         Long idUsuario = estudiante.getUsuario().getIdUsuario();
         estudianteRepository.delete(estudiante);
 
-        // Eliminar rol ESTUDIANTE del usuario
-        usuarioRolRepository.deleteByUsuario_IdUsuario(idUsuario);
+        // Eliminar solo el rol ESTUDIANTE (no los demás roles del usuario)
+        usuarioRolRepository.findByUsuario_IdUsuarioAndId_TipoRol(idUsuario, "ESTUDIANTE")
+                .ifPresent(usuarioRolRepository::delete);
     }
 
     @Override
