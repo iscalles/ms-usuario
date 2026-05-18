@@ -8,33 +8,34 @@ import java.util.Objects;
 @Embeddable  // componente embebido (clave)
 public class ApoderadoEstudianteId implements Serializable {
 
+    // Guardan las PK de Apoderado y Estudiante (no ids de usuario)
     @Column(name = "id_apoderado")
-    private Long apoderadoIdUsuario;
+    private Long idApoderado;
 
     @Column(name = "id_estudiante")
-    private Long estudianteIdUsuario;
+    private Long idEstudiante;
 
     public ApoderadoEstudianteId() {}
 
-    public ApoderadoEstudianteId(Long apoderadoIdUsuario, Long estudianteIdUsuario) {
-        this.apoderadoIdUsuario = apoderadoIdUsuario;
-        this.estudianteIdUsuario = estudianteIdUsuario;
+    public ApoderadoEstudianteId(Long idApoderado, Long idEstudiante) {
+        this.idApoderado = idApoderado;
+        this.idEstudiante = idEstudiante;
     }
 
-    public Long getApoderadoIdUsuario() {
-        return apoderadoIdUsuario;
+    public Long getIdApoderado() {
+        return idApoderado;
     }
 
-    public void setApoderadoIdUsuario(Long apoderadoIdUsuario) {
-        this.apoderadoIdUsuario = apoderadoIdUsuario;
+    public void setIdApoderado(Long idApoderado) {
+        this.idApoderado = idApoderado;
     }
 
-    public Long getEstudianteIdUsuario() {
-        return estudianteIdUsuario;
+    public Long getIdEstudiante() {
+        return idEstudiante;
     }
 
-    public void setEstudianteIdUsuario(Long estudianteIdUsuario) {
-        this.estudianteIdUsuario = estudianteIdUsuario;
+    public void setIdEstudiante(Long idEstudiante) {
+        this.idEstudiante = idEstudiante;
     }
 
     @Override
@@ -42,12 +43,12 @@ public class ApoderadoEstudianteId implements Serializable {
         if (this == o) return true;
         if (!(o instanceof ApoderadoEstudianteId)) return false;
         ApoderadoEstudianteId that = (ApoderadoEstudianteId) o;
-        return Objects.equals(apoderadoIdUsuario, that.apoderadoIdUsuario) &&
-                Objects.equals(estudianteIdUsuario, that.estudianteIdUsuario);
+        return Objects.equals(idApoderado, that.idApoderado) &&
+                Objects.equals(idEstudiante, that.idEstudiante);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(apoderadoIdUsuario, estudianteIdUsuario);
+        return Objects.hash(idApoderado, idEstudiante);
     }
 }

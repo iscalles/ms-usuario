@@ -37,7 +37,7 @@ public class ApoderadoEstudianteServiceImpl implements ApoderadoEstudianteServic
         apoderadoRepository.findById(idApoderado)
                 .orElseThrow(() -> new RuntimeException("Apoderado no encontrado con id: " + idApoderado));
 
-        return apoderadoEstudianteRepository.findByIdApoderadoIdUsuario(idApoderado);
+        return apoderadoEstudianteRepository.findByApoderado(idApoderado);
     }
 
     @Override
@@ -46,40 +46,35 @@ public class ApoderadoEstudianteServiceImpl implements ApoderadoEstudianteServic
         estudianteRepository.findById(idEstudiante)
                 .orElseThrow(() -> new RuntimeException("Estudiante no encontrado con id: " + idEstudiante));
 
-        return apoderadoEstudianteRepository.findByIdEstudianteIdUsuario(idEstudiante);
+        return apoderadoEstudianteRepository.findByEstudiante(idEstudiante);
     }
 
     @Override
     public Optional<ApoderadoEstudiante> buscarRelacion(Long idApoderado, Long idEstudiante) {
-        return apoderadoEstudianteRepository.findByIdApoderadoIdUsuarioAndIdEstudianteIdUsuario(idApoderado, idEstudiante);
+        return apoderadoEstudianteRepository.findRelacion(idApoderado, idEstudiante);
     }
 
     @Override
     public ApoderadoEstudiante crearRelacion(ApoderadoEstudianteDTO dto) {
         // Verificar que existe apoderado
-        Apoderado apoderado = apoderadoRepository.findById(dto.getIdApoderado())
+        apoderadoRepository.findById(dto.getIdApoderado())
                 .orElseThrow(() -> new RuntimeException("Apoderado no encontrado con id: " + dto.getIdApoderado()));
 
         // Verificar que existe estudiante
-        Estudiante estudiante = estudianteRepository.findById(dto.getIdEstudiante())
+        estudianteRepository.findById(dto.getIdEstudiante())
                 .orElseThrow(() -> new RuntimeException("Estudiante no encontrado con id: " + dto.getIdEstudiante()));
 
-        // Verificar que no existe relación
-        if (apoderadoEstudianteRepository.findByIdApoderadoIdUsuarioAndIdEstudianteIdUsuario(
-                dto.getIdApoderado(), dto.getIdEstudiante()).isPresent()) {
+        // Verificar que no existe ya la relación
+        if (apoderadoEstudianteRepository.findRelacion(dto.getIdApoderado(), dto.getIdEstudiante()).isPresent()) {
             throw new RuntimeException("Ya existe relación apoderado-estudiante");
         }
 
-        ApoderadoEstudianteId id = new ApoderadoEstudianteId(
-                apoderado.getUsuario().getIdUsuario(),
-                estudiante.getUsuario().getIdUsuario()
-        );
+        // La clave compuesta usa las PK de apoderado y estudiante
+        ApoderadoEstudianteId id = new ApoderadoEstudianteId(dto.getIdApoderado(), dto.getIdEstudiante());
 
         ApoderadoEstudiante relacion = new ApoderadoEstudiante();
         relacion.setId(id);
         relacion.setParentescoApoderadoEstudiante(dto.getParentescoApoderadoEstudiante());
-        relacion.setApoderado(apoderado);
-        relacion.setEstudiante(estudiante);
 
         return apoderadoEstudianteRepository.save(relacion);
     }
@@ -87,7 +82,7 @@ public class ApoderadoEstudianteServiceImpl implements ApoderadoEstudianteServic
     @Override
     public ApoderadoEstudiante actualizarRelacion(Long idApoderado, Long idEstudiante, String parentesco) {
         ApoderadoEstudiante relacion = apoderadoEstudianteRepository
-                .findByIdApoderadoIdUsuarioAndIdEstudianteIdUsuario(idApoderado, idEstudiante)
+                .findRelacion(idApoderado, idEstudiante)
                 .orElseThrow(() -> new RuntimeException("Relación no encontrada"));
 
         relacion.setParentescoApoderadoEstudiante(parentesco);
@@ -102,8 +97,6 @@ public class ApoderadoEstudianteServiceImpl implements ApoderadoEstudianteServic
 
     @Override
     public boolean existeRelacion(Long idApoderado, Long idEstudiante) {
-        return apoderadoEstudianteRepository
-                .findByIdApoderadoIdUsuarioAndIdEstudianteIdUsuario(idApoderado, idEstudiante)
-                .isPresent();
+        return apoderadoEstudianteRepository.findRelacion(idApoderado, idEstudiante).isPresent();
     }
 }
