@@ -69,6 +69,8 @@ public class ApoderadoEstudianteServiceImpl implements ApoderadoEstudianteServic
             throw new RuntimeException("Ya existe relación apoderado-estudiante");
         }
 
+        validarParentescoUnico(dto.getIdEstudiante(), dto.getParentescoApoderadoEstudiante(), null);
+
         // La clave compuesta usa las PK de apoderado y estudiante
         ApoderadoEstudianteId id = new ApoderadoEstudianteId(dto.getIdApoderado(), dto.getIdEstudiante());
 
@@ -85,8 +87,27 @@ public class ApoderadoEstudianteServiceImpl implements ApoderadoEstudianteServic
                 .findRelacion(idApoderado, idEstudiante)
                 .orElseThrow(() -> new RuntimeException("Relación no encontrada"));
 
+        // Al cambiar el parentesco, excluye esta misma relación de la validación de unicidad
+        validarParentescoUnico(idEstudiante, parentesco, idApoderado);
+
         relacion.setParentescoApoderadoEstudiante(parentesco);
         return apoderadoEstudianteRepository.save(relacion);
+    }
+
+    // Un estudiante solo puede tener un apoderado con parentesco "Padre" y uno con "Madre".
+    // idApoderadoExcluir se usa al actualizar, para no comparar la relación contra sí misma.
+    private void validarParentescoUnico(Long idEstudiante, String parentesco, Long idApoderadoExcluir) {
+        if (parentesco == null) return;
+        boolean esPadreOMadre = "Padre".equalsIgnoreCase(parentesco) || "Madre".equalsIgnoreCase(parentesco);
+        if (!esPadreOMadre) return;
+
+        boolean yaExiste = apoderadoEstudianteRepository.findByEstudiante(idEstudiante).stream()
+                .filter(r -> !r.getId().getIdApoderado().equals(idApoderadoExcluir))
+                .anyMatch(r -> parentesco.equalsIgnoreCase(r.getParentescoApoderadoEstudiante()));
+
+        if (yaExiste) {
+            throw new RuntimeException("Este estudiante ya tiene un apoderado registrado como " + parentesco + ".");
+        }
     }
 
     @Override
