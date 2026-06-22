@@ -75,10 +75,13 @@ spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.ser
 | Método | Ruta | Descripción |
 |---|---|---|
 | GET | `/usuario` | Listar todos (sin RUT — respuesta pública) |
-| GET | `/usuario/interno` | Listar todos (con RUT — uso administrativo) |
+| GET | `/usuario/interno` | Listar todos (con RUT y roles — uso interno entre microservicios) |
 | GET | `/usuario/{id}` | Buscar por ID |
-| GET | `/usuario/interno/{id}` | Buscar por ID con RUT (uso interno de ms-auth) |
+| GET | `/usuario/interno/{id}` | Buscar por ID con RUT y roles (consumido vía OpenFeign por ms-auth, ms-academico y ms-asistencia) |
 | GET | `/usuario/interno/rut/{rut}` | Buscar por RUT (uso de ms-auth en login) |
+| GET | `/usuario/interno/correo/{correo}` | Buscar por correo (uso interno) |
+| GET | `/usuario/existencia/rut/{rut}` | Verificar si existe un usuario con ese RUT (`true`/`false`) |
+| GET | `/usuario/existencia/correo/{correo}` | Verificar si existe un usuario con ese correo (`true`/`false`) |
 | POST | `/usuario` | Crear usuario |
 | PUT | `/usuario/{id}` | Actualizar usuario |
 | DELETE | `/usuario/{id}` | Eliminar usuario |
@@ -100,6 +103,8 @@ spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.ser
 | Relaciones apoderado-alumno | `/apoderado-estudiante` |
 
 Cada recurso soporta GET, POST, PUT y DELETE.
+
+> **Regla de negocio en `/apoderado-estudiante`:** un mismo estudiante solo puede tener asociado un apoderado con parentesco `"Padre"` y uno con `"Madre"`; la API valida esto al crear la relación (`POST /apoderado-estudiante`, body: `idApoderado`, `idEstudiante`, `parentescoApoderadoEstudiante`).
 
 ---
 
@@ -142,7 +147,7 @@ http://localhost:8081/usuario/interno/9
 
 ## Tecnologías
 
-- Spring Boot 4.0.5
+- Spring Boot 3.2.12 (bajado desde 4.0.5 para alinear el BOM de Spring Cloud 2023.0.0 con el resto de los microservicios y poder exponerse como cliente/servidor OpenFeign de forma consistente)
 - Java 21
 - Spring Data JPA + Hibernate
 - Oracle Autonomous Database
