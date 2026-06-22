@@ -1,5 +1,6 @@
 package ms_usuario.usuarioService.service.impl;
 
+import ms_usuario.usuarioService.client.AuthClient;
 import ms_usuario.usuarioService.dto.UsuarioDTO;
 import ms_usuario.usuarioService.dto.UsuarioDTOResponse;
 import ms_usuario.usuarioService.dto.UsuarioDTOInternal;
@@ -22,10 +23,13 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final UsuarioRolRepository usuarioRolRepository;
+    private final AuthClient authClient;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioRolRepository usuarioRolRepository) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioRolRepository usuarioRolRepository,
+                              AuthClient authClient) {
         this.usuarioRepository = usuarioRepository;
         this.usuarioRolRepository = usuarioRolRepository;
+        this.authClient = authClient;
     }
 
     @Override
@@ -111,6 +115,16 @@ public class UsuarioServiceImpl implements UsuarioService {
     public void eliminarUsuario(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id));
+
+        // La cuenta de acceso (password hash, refresh tokens) vive en el esquema de ms-auth,
+        // así que no se borra en cascada. Se desactiva allá ANTES de borrar el usuario acá:
+        // si ms-auth no responde, se aborta para no dejar una cuenta de acceso activa huérfana.
+        try {
+            authClient.desactivarCuenta(id);
+        } catch (Exception e) {
+            throw new RuntimeException("No se pudo desactivar la cuenta de acceso del usuario en el servicio de autenticación. Intenta nuevamente.");
+        }
+
         usuarioRepository.delete(usuario);
     }
 
